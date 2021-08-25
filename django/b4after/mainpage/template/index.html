@@ -1,0 +1,15 @@
+<!DOCTYPE html> <!--HTML5임을 의미-->
+<html>
+    <head>
+        <title>Python django exmaple</title>
+        {% load static %}
+        <link rel="stylesheet" type="text/css" href="{% static 'site.css' %}"/>
+    </head>
+
+    <body>
+        <h1>DoHoon's Intro</h1>
+        <p>
+            <img src="{% static 'homepage/name.jpg' %}" alt="my_name image"/>
+        </p>
+    </body>
+</html>
