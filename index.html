@@ -6,10 +6,14 @@
 -->
 <html>
 	<head>
-		<title>Hyperspace by HTML5 UP</title>
+		<title>B4 & AFTER Final Project</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="assets/css/main.css" />
+		<script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js" crossorigin="anonymous"></script>
+		<script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
+		<script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
+		<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
 		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
 	</head>
 	<body class="is-preload">
@@ -19,10 +23,10 @@
 				<div class="inner">
 					<nav>
 						<ul>
-							<li><a href="#intro">Welcome</a></li>
+							<li><a href="#intro">ABOUT PROJECT</a></li>
 							<li><a href="#one">Who we are</a></li>
-							<li><a href="#two">What we do</a></li>
-							<li><a href="#three">Get in touch</a></li>
+							<li><a href="#two">Project Page</a></li>
+							<li><a href="#three">Things To Do</a></li>
 						</ul>
 					</nav>
 				</div>
@@ -34,9 +38,9 @@
 				<!-- Intro -->
 					<section id="intro" class="wrapper style1 fullscreen fade-up">
 						<div class="inner">
-							<h1>Hyperspace</h1>
-							<p>Just another fine responsive site template designed by <a href="http://html5up.net">HTML5 UP</a><br />
-							and released for free under the <a href="http://html5up.net/license">Creative Commons</a>.</p>
+							<h1>About B4 Team Project</h1>
+							<p>Hello, welcome to our project. This project leads you to experience Fantastic hand motion tracking which can control KaKao map without any device. </p>
+							<p><a href="https://map.kakao.com/">About Kakao map</a>.</p>
 							<ul class="actions">
 								<li><a href="#one" class="button scrolly">Learn more</a></li>
 							</ul>
@@ -46,11 +50,11 @@
 				<!-- One -->
 					<section id="one" class="wrapper style2 spotlights">
 						<section>
-							<a href="#" class="image"><img src="images/pic01.jpg" alt="" data-position="center center" /></a>
+							<a href="#" class="image"><img src="images/dohun.png" alt="" data-position="center center" /></a>
 							<div class="content">
 								<div class="inner">
-									<h2>Sed ipsum dolor</h2>
-									<p>Phasellus convallis elit id ullamcorper pulvinar. Duis aliquam turpis mauris, eu ultricies erat malesuada quis. Aliquam dapibus.</p>
+									<h2>Song Do Hoon</h2>
+									<p>Team Leader of B4 & AFTER.</p>
 									<ul class="actions">
 										<li><a href="generic.html" class="button">Learn more</a></li>
 									</ul>
@@ -58,11 +62,11 @@
 							</div>
 						</section>
 						<section>
-							<a href="#" class="image"><img src="images/pic02.jpg" alt="" data-position="top center" /></a>
+							<a href="#" class="image"><img src="images/JunYeop.jpg" alt="" data-position="top center" /></a>
 							<div class="content">
 								<div class="inner">
-									<h2>Feugiat consequat</h2>
-									<p>Phasellus convallis elit id ullamcorper pulvinar. Duis aliquam turpis mauris, eu ultricies erat malesuada quis. Aliquam dapibus.</p>
+									<h2>Lee Joon Yup</h2>
+									<p>ML Engineer</p>
 									<ul class="actions">
 										<li><a href="generic.html" class="button">Learn more</a></li>
 									</ul>
@@ -70,11 +74,23 @@
 							</div>
 						</section>
 						<section>
-							<a href="#" class="image"><img src="images/pic03.jpg" alt="" data-position="25% 25%" /></a>
+							<a href="#" class="image"><img src="images/sangin.jpg" alt="" data-position="25% 25%" /></a>
 							<div class="content">
 								<div class="inner">
-									<h2>Ultricies aliquam</h2>
-									<p>Phasellus convallis elit id ullamcorper pulvinar. Duis aliquam turpis mauris, eu ultricies erat malesuada quis. Aliquam dapibus.</p>
+									<h2>Park Sang In</h2>
+									<p>ML Engineer</p>
+									<ul class="actions">
+										<li><a href="generic.html" class="button">Learn more</a></li>
+									</ul>
+								</div>
+							</div>
+						</section>
+						<section>
+							<a href="#" class="image"><img src="images/Alin.jpg" alt="" data-position="25% 25%" /></a>
+							<div class="content">
+								<div class="inner">
+									<h2>Kim A Lin</h2>
+									<p>ML Engineer</p>
 									<ul class="actions">
 										<li><a href="generic.html" class="button">Learn more</a></li>
 									</ul>
@@ -86,38 +102,70 @@
 				<!-- Two -->
 					<section id="two" class="wrapper style3 fade-up">
 						<div class="inner">
-							<h2>What we do</h2>
-							<p>Phasellus convallis elit id ullamcorper pulvinar. Duis aliquam turpis mauris, eu ultricies erat malesuada quis. Aliquam dapibus, lacus eget hendrerit bibendum, urna est aliquam sem, sit amet imperdiet est velit quis lorem.</p>
+							<h2>Start Demo</h2>
+							<p>Now, you can control our map API with your hand Gesture.</p>
 							<div class="features">
 								<section>
 									<span class="icon solid major fa-code"></span>
-									<h3>Lorem ipsum amet</h3>
-									<p>Phasellus convallis elit id ullam corper amet et pulvinar. Duis aliquam turpis mauris, sed ultricies erat dapibus.</p>
+									<h3>KaKao Map API</h3>
+										<div id="map" style="width:500px;height:400px;"></div>
+										<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=930d7dff7ef0e0911572002a7d811db9"></script>
+										<script>
+											var container = document.getElementById('map');
+											var options = {
+												center: new kakao.maps.LatLng(33.450701, 126.570667),
+												level: 5
+											};
+									
+											var map = new kakao.maps.Map(container, options);
+										</script>
 								</section>
 								<section>
-									<span class="icon solid major fa-lock"></span>
-									<h3>Aliquam sed nullam</h3>
-									<p>Phasellus convallis elit id ullam corper amet et pulvinar. Duis aliquam turpis mauris, sed ultricies erat dapibus.</p>
-								</section>
-								<section>
-									<span class="icon solid major fa-cog"></span>
-									<h3>Sed erat ullam corper</h3>
-									<p>Phasellus convallis elit id ullam corper amet et pulvinar. Duis aliquam turpis mauris, sed ultricies erat dapibus.</p>
-								</section>
-								<section>
-									<span class="icon solid major fa-desktop"></span>
-									<h3>Veroeros quis lorem</h3>
-									<p>Phasellus convallis elit id ullam corper amet et pulvinar. Duis aliquam turpis mauris, sed ultricies erat dapibus.</p>
-								</section>
-								<section>
-									<span class="icon solid major fa-link"></span>
-									<h3>Urna quis bibendum</h3>
-									<p>Phasellus convallis elit id ullam corper amet et pulvinar. Duis aliquam turpis mauris, sed ultricies erat dapibus.</p>
-								</section>
-								<section>
-									<span class="icon major fa-gem"></span>
-									<h3>Aliquam urna dapibus</h3>
-									<p>Phasellus convallis elit id ullam corper amet et pulvinar. Duis aliquam turpis mauris, sed ultricies erat dapibus.</p>
+									<span class="icon solid major fa-code"></span>
+									<h3>Your WEBCAM</h3>
+									<div class="container">
+										<video class="input_video"></video>
+    									<canvas class="output_canvas" width="500px" height="400px"></canvas>
+									</div>
+									<script type="module">
+										const videoElement = document.getElementsByClassName('input_video')[0];
+										const canvasElement = document.getElementsByClassName('output_canvas')[0];
+										const canvasCtx = canvasElement.getContext('2d');
+										 
+										function onResults(results) {
+										  canvasCtx.save();
+										  canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+										  canvasCtx.drawImage(
+											  results.image, 0, 0, canvasElement.width, canvasElement.height);
+										  if (results.multiHandLandmarks) {
+											for (const landmarks of results.multiHandLandmarks) {
+											  drawConnectors(canvasCtx, landmarks, HAND_CONNECTIONS,
+															 {color: '#00FF00', lineWidth: 5});
+											  drawLandmarks(canvasCtx, landmarks, {color: '#FF0000', lineWidth: 2});
+											}
+										  }
+										  canvasCtx.restore();
+										}
+										 
+										const hands = new Hands({locateFile: (file) => {
+										  return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`;
+										}});
+										hands.setOptions({
+										  maxNumHands: 2,
+										  minDetectionConfidence: 0.5,
+										  minTrackingConfidence: 0.5
+										});
+										hands.onResults(onResults);
+										 
+										const camera = new Camera(videoElement, {
+										  onFrame: async () => {
+											await hands.send({image: videoElement});
+										  },
+										  width: 500,
+										  height: 400
+										});
+										camera.start();
+										</script>
 								</section>
 							</div>
 							<ul class="actions">
