@@ -141,23 +141,15 @@ def main():
 
                 # 핸드 사인 분류
                 hand_sign_id = keypoint_classifier(pre_processed_landmark_list)
-                if hand_sign_id == 3:  # 삿대질 로그인 hand sign id는 라벨 번호!
+                if hand_sign_id == 2:  # 삿대질 로그인 hand sign id는 라벨 번호!
                     point_history.append(landmark_list[8])  # 인체 측정 좌표 아 여기가 검지 포인터로 인식하는 곳.
                 else:
                     point_history.append([0, 0])
                 ############################ 수정한 부분    
-                if hand_sign_id == 5:   # 엄지 로그인 hand sign id는 라벨 번호!
+                if hand_sign_id == 5: # 엄지 로그인 hand sign id는 라벨 번호!
                     point_history.append(landmark_list[4])
-                    point_history.append(landmark_list[8])
-                    # print(landmark_list[4], landmark_list[8])
-                    # print(point_history)
-                else:
-                    point_history.append([0, 0])
-                if hand_sign_id == 2:   # 엄지 로그인 hand sign id는 라벨 번호!
-                    point_history.append(landmark_list[4])
-                    point_history.append(landmark_list[8])
-                    # print(landmark_list[4], landmark_list[8])
-                    # print(point_history)
+                    print(landmark_list[4])
+                    print(point_history)
                 else:
                     point_history.append([0, 0])
 
