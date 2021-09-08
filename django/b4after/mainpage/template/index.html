@@ -52,7 +52,7 @@
 				<!-- One -->
 					<section id="one" class="wrapper style2 spotlights">
 						<section>
-							<a href="#" class="image"><img src="{% static 'images/dohun.png' %}" alt="" data-position="center center" /></a>
+							<a href="#" class="image"><img src="{% static 'images/DoHoon.png' %}" alt="DoHoon" data-position="center center" /></a>
 							<div class="content">
 								<div class="inner">
 									<h2>Song Do Hoon</h2>
@@ -64,10 +64,10 @@
 							</div>
 						</section>
 						<section>
-							<a href="#" class="image"><img src="{% static 'images/JunYeop.jpg' %}" alt="" data-position="top center" /></a>
+							<a href="#" class="image"><img src="{% static 'images/JunYup.jpg' %}" alt="JunYup" data-position="top center" /></a>
 							<div class="content">
 								<div class="inner">
-									<h2>Lee Joon Yup</h2>
+									<h2>Lee Jun Yup</h2>
 									<p>ML Engineer</p>
 									<ul class="actions">
 										<li><a href="generic.html" class="button">Learn more</a></li>
@@ -76,7 +76,7 @@
 							</div>
 						</section>
 						<section>
-							<a href="#" class="image"><img src="{% static 'images/sangin.jpg' %}" alt="" data-position="25% 25%" /></a>
+							<a href="#" class="image"><img src="{% static 'images/SangIn.jpg' %}" alt="SangIn" data-position="25% 25%" /></a>
 							<div class="content">
 								<div class="inner">
 									<h2>Park Sang In</h2>
@@ -88,10 +88,10 @@
 							</div>
 						</section>
 						<section>
-							<a href="#" class="image"><img src="{% static 'images/Alin.jpg' %}" alt="" data-position="25% 25%" /></a>
+							<a href="#" class="image"><img src="{% static 'images/AhLynne.jpg' %}" alt="AhLynne" data-position="25% 25%" /></a>
 							<div class="content">
 								<div class="inner">
-									<h2>Kim A Lin</h2>
+									<h2>Kim Ah Lynne</h2>
 									<p>ML Engineer</p>
 									<ul class="actions">
 										<li><a href="generic.html" class="button">Learn more</a></li>
@@ -120,6 +120,39 @@
 											};
 									
 											var map = new kakao.maps.Map(container, options);
+											function zoomIn(map) {
+												var curLevel = map.getLevel();
+												map.setLevel(curLevel + 1, {
+													animate: {
+														duration: 300
+													}
+												});
+											}
+											function zoomOut(map) {
+												var curLevel = map.getLevel();
+												map.setLevel(curLevel - 1, {
+													animate: {
+														duration: 300
+													}
+												});
+											}
+											function moveMap(map, direction) {
+												var curLoc = map.getCenter();
+												var moveLatLon = new kakao.maps.LatLng(curLoc.x + direction.x, curLoc.y + direction.y);
+												map.setCenter(moveLatLon);
+												
+											}
+											kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
+												var latLng = mouseEvent.latLng;
+
+												marker.setPosition(latLng);
+
+												var message = '클릭한 위치의 위도는 ' + latlng.getLat() + ' 이고, ';
+												message += '경도는 ' + latlng.getLng() + ' 입니다';
+												
+												var resultDiv = document.getElementById('clickLatlng'); 
+												resultDiv.innerHTML = message;
+											});
 										</script>
 								</section>
 								<section>
