@@ -1,0 +1,43 @@
+
+										<script>
+											var container = document.getElementById('map');
+											var options = {
+												center: new kakao.maps.LatLng(33.450701, 126.570667),
+												level: 5
+											};
+									
+											var map = new kakao.maps.Map(container, options);
+											function zoomIn(map) {
+												var curLevel = map.getLevel();
+												map.setLevel(curLevel + 1, {
+													animate: {
+														duration: 300
+													}
+												});
+											}
+											function zoomOut(map) {
+												var curLevel = map.getLevel();
+												map.setLevel(curLevel - 1, {
+													animate: {
+														duration: 300
+													}
+												});
+											}
+											function moveMap(map, direction) {
+												var curLoc = map.getCenter();
+												var moveLatLon = new kakao.maps.LatLng(curLoc.x + direction.x, curLoc.y + direction.y);
+												map.setCenter(moveLatLon);
+												
+											}
+											kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
+												var latLng = mouseEvent.latLng;
+
+												marker.setPosition(latLng);
+
+												var message = '클릭한 위치의 위도는 ' + latlng.getLat() + ' 이고, ';
+												message += '경도는 ' + latlng.getLng() + ' 입니다';
+												
+												var resultDiv = document.getElementById('clickLatlng'); 
+												resultDiv.innerHTML = message;
+											});
+										</script>
