@@ -31,7 +31,7 @@ def get_args():
     parser.add_argument("--min_tracking_confidence",
                         help='min_tracking_confidence',
                         type=int,
-                        default=0.5)
+                        default=0.8)
 
     args = parser.parse_args()
 
@@ -89,9 +89,10 @@ def main():
     cvFpsCalc = CvFpsCalc(buffer_len=10)
 
     # 좌표 내역 #################################################################
-    history_length = 16
-    point_history = deque(maxlen=history_length)
-
+    history_length = 32 #차원 맞춰줘야함 핑거 제스처 분류 *2 지워서 차원 맞춰주기
+    point_cnt = 21 ### 추가 - 인식 포인터 개수 지금 당장은 2포인터
+    point_history = deque(maxlen=history_length) #히스토리 개수만큼 deque 길이 정함.
+    
     # 핑거 제스처 내역   ################################################
     finger_gesture_history = deque(maxlen=history_length)
 
@@ -138,29 +139,39 @@ def main():
                 # 학습 데이터 저장
                 logging_csv(number, mode, pre_processed_landmark_list,
                             pre_processed_point_history_list)
-
+                
+                # 각 부분 포인터 받기 ################# 강제종료.
+                hand_sign_id = keypoint_classifier(pre_processed_landmark_list)
+                
+                for i in range(0, point_cnt): #point_cnt 21개
+                    point_history.append(landmark_list[i])
+                """   
+                # 각 부분 포인터 받기 ################# 0~4는 안 그림.
+                hand_sign_id = keypoint_classifier(pre_processed_landmark_list)
+                a = 0
+                while a < 21:
+                    point_history.append(landmark_list[a])
+                    a = a + 1
+                
                 # 핸드 사인 분류
                 hand_sign_id = keypoint_classifier(pre_processed_landmark_list)
-                if hand_sign_id == 3:  # 삿대질 로그인 hand sign id는 라벨 번호!
-                    point_history.append(landmark_list[8])  # 인체 측정 좌표 아 여기가 검지 포인터로 인식하는 곳.
+                if hand_sign_id == 3:  # 삿대질 로그인 hand sign id는 라벨 번호
+                    point_history.append(landmark_list[8])  # 인체 측정 좌표 검지 포인터로 인식하는 곳.
                 else:
                     point_history.append([0, 0])
-                ############################ 수정한 부분    
-                if hand_sign_id == 5:   # 엄지 로그인 hand sign id는 라벨 번호!
+  
+                if hand_sign_id == 5:   # smile hand sign id는 라벨 번호
                     point_history.append(landmark_list[4])
                     point_history.append(landmark_list[8])
-                    # print(landmark_list[4], landmark_list[8])
-                    # print(point_history)
                 else:
                     point_history.append([0, 0])
-                if hand_sign_id == 2:   # 엄지 로그인 hand sign id는 라벨 번호!
+                    
+                if hand_sign_id == 2:   # okay hand sign id는 라벨 번호
                     point_history.append(landmark_list[4])
                     point_history.append(landmark_list[8])
-                    # print(landmark_list[4], landmark_list[8])
-                    # print(point_history)
                 else:
                     point_history.append([0, 0])
-
+                 """
                 # 핑거 제스처 분류
                 finger_gesture_id = 0
                 point_history_len = len(pre_processed_point_history_list)
@@ -291,17 +302,41 @@ def pre_process_point_history(image, point_history):
         itertools.chain.from_iterable(temp_point_history))
 
     return temp_point_history
+"""
+######################################## 거리 계산하는 알고리즘 짜기?
+def pre_process_point_history(image, point_history):
+    image_width, image_height = image.shape[1], image.shape[0]
 
+    temp_point_history = copy.deepcopy(point_history)
 
+    # 상대 좌표로 변환
+    base_x, base_y = 0, 0
+    for index, point in enumerate(temp_point_history):
+        if index == 0:
+            base_x, base_y = point[0], point[1]
+
+        temp_point_history[index][0] = (temp_point_history[index][0] -
+                                        base_x) / image_width
+        temp_point_history[index][1] = (temp_point_history[index][1] -
+                                        base_y) / image_height
+
+    # 1 차원리스트로 변환
+    temp_point_history = list(
+        itertools.chain.from_iterable(temp_point_history))
+
+    return temp_point_history
+"""
+
+#학습데이터 저장 부분
 def logging_csv(number, mode, landmark_list, point_history_list):
     if mode == 0:
         pass
-    if mode == 1 and (0 <= number <= 9):
+    if mode == 1 and (0 <= number <= 9): #mode가 keypoint 저장이면~ number는 라벨 번호
         csv_path = 'model/keypoint_classifier/keypoint.csv'
         with open(csv_path, 'a', newline="") as f:
             writer = csv.writer(f)
             writer.writerow([number, *landmark_list])
-    if mode == 2 and (0 <= number <= 9):
+    if mode == 2 and (0 <= number <= 9): #mode가 point history 저장이면~ number는 라벨 번호
         csv_path = 'model/point_history_classifier/point_history.csv'
         with open(csv_path, 'a', newline="") as f:
             writer = csv.writer(f)
@@ -500,7 +535,7 @@ def draw_landmarks(image, landmark_point):
 
 def draw_bounding_rect(use_brect, image, brect):
     if use_brect:
-        # 경계 사각형
+        # 경계 사각형 크게 그리기
         cv.rectangle(image, (brect[0]-5, brect[1]-5), (brect[2]-5, brect[3]-5),
                      (0, 0, 0), 1)
 
