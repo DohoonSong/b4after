@@ -15,6 +15,8 @@ from utils import CvFpsCalc
 from model import KeyPointClassifier
 from model import PointHistoryClassifier
 
+import time
+
 
 def get_args():
     parser = argparse.ArgumentParser()
@@ -61,7 +63,7 @@ def main():
     mp_hands = mp.solutions.hands
     hands = mp_hands.Hands(
         static_image_mode=use_static_image_mode,
-        max_num_hands=2,# 손 인식 개수
+        max_num_hands=1,  # 손 인식 개수
         min_detection_confidence=min_detection_confidence,
         min_tracking_confidence=min_tracking_confidence,
     )
@@ -89,7 +91,8 @@ def main():
     cvFpsCalc = CvFpsCalc(buffer_len=10)
 
     # 좌표 내역 #################################################################
-    history_length = 16
+    point_cnt = 2
+    history_length = 16 * point_cnt
     point_history = deque(maxlen=history_length)
 
     # 핑거 제스처 내역   ################################################
@@ -97,6 +100,7 @@ def main():
 
     #  ########################################################################
     mode = 0
+    #########################
 
     while True:
         fps = cvFpsCalc.get()
@@ -113,6 +117,7 @@ def main():
             break
         image = cv.flip(image, 1)  # ミラー表示
         debug_image = copy.deepcopy(image)
+
 
         # 검색 실시 #############################################################
         image = cv.cvtColor(image, cv.COLOR_BGR2RGB)
@@ -141,28 +146,14 @@ def main():
 
                 # 핸드 사인 분류
                 hand_sign_id = keypoint_classifier(pre_processed_landmark_list)
-                if hand_sign_id == 3:  # 삿대질 로그인 hand sign id는 라벨 번호!
-                    point_history.append(landmark_list[8])  # 인체 측정 좌표 아 여기가 검지 포인터로 인식하는 곳.
-                else:
-                    point_history.append([0, 0])
-                ############################ 수정한 부분    
-                if hand_sign_id == 5:   # 엄지 로그인 hand sign id는 라벨 번호!
-                    point_history.append(landmark_list[4])
-                    point_history.append(landmark_list[8])
-                    # print(landmark_list[4], landmark_list[8])
-                    # print(point_history)
-                else:
-                    point_history.append([0, 0])
-                if hand_sign_id == 2:   # 엄지 로그인 hand sign id는 라벨 번호!
-                    point_history.append(landmark_list[4])
-                    point_history.append(landmark_list[8])
-                    # print(landmark_list[4], landmark_list[8])
-                    # print(point_history)
-                else:
-                    point_history.append([0, 0])
+
+                # save history (index_tip, thumb_tip)
+                point_history.append(landmark_list[8])
+                point_history.append(landmark_list[4])
 
                 # 핑거 제스처 분류
                 finger_gesture_id = 0
+
                 point_history_len = len(pre_processed_point_history_list)
                 if point_history_len == (history_length * 2):
                     finger_gesture_id = point_history_classifier(
@@ -222,9 +213,10 @@ def calc_bounding_rect(image, landmarks):
 
         landmark_array = np.append(landmark_array, landmark_point, axis=0)
 
+    wide = 10
     x, y, w, h = cv.boundingRect(landmark_array)
 
-    return [x, y, x + w, y + h]
+    return [x - wide, y - wide, x + w + wide, y + h + wide]
 
 
 def calc_landmark_list(image, landmarks):
@@ -509,7 +501,7 @@ def draw_bounding_rect(use_brect, image, brect):
 
 def draw_info_text(image, brect, handedness, hand_sign_text,
                    finger_gesture_text):
-    cv.rectangle(image, (brect[0]-5, brect[1]-5), (brect[2]-5, brect[1] - 22),
+    cv.rectangle(image, (brect[0]-5, brect[1]), (brect[2]-5, brect[1] - 22),
                  (0, 0, 0), -1)
 
     info_text = handedness.classification[0].label[0:]
@@ -519,9 +511,10 @@ def draw_info_text(image, brect, handedness, hand_sign_text,
                cv.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 1, cv.LINE_AA)
 
     if finger_gesture_text != "":
-        cv.putText(image, "Finger Gesture:" + finger_gesture_text, (10, 60),
+
+        cv.putText(image, "Gesture:" + finger_gesture_text, (10, 60),
                    cv.FONT_HERSHEY_SIMPLEX, 1.0, (0, 0, 0), 4, cv.LINE_AA)
-        cv.putText(image, "Finger Gesture:" + finger_gesture_text, (10, 60),
+        cv.putText(image, "Gesture:" + finger_gesture_text, (10, 60),
                    cv.FONT_HERSHEY_SIMPLEX, 1.0, (255, 255, 255), 2,
                    cv.LINE_AA)
 
