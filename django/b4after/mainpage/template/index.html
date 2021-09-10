@@ -172,7 +172,7 @@
 										 // tensorflow lite model loading / 모델 경로
 										const keypoint_model = await tf.loadLayersModel('{% static "model/keypoint/model.json" %}');
 										const gesture_model = await tf.loadLayersModel('{% static "model/gesture/model.json" %}');
-										//console.log(keypoint_model.name, gesture_model.name, ": model logged successfully");
+										console.log(keypoint_model.name, gesture_model.name, ": model logged successfully");
 										//
 
 										// results parsing 하는 부분.
