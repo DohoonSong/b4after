@@ -16,9 +16,6 @@
 		<script src="https://cdn.jsdelivr.net/npm/@mediapipe/control_utils/control_utils.js" crossorigin="anonymous"></script>
 		<script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js" crossorigin="anonymous"></script>
 		<script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js" crossorigin="anonymous"></script>
-		<!-- tensorflow javascript 모델 -->
-		<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.0.0/dist/tf.min.js"></script>
-		
 		<noscript><link rel="stylesheet" href="{% static 'assets/css/noscript.css' %}" /></noscript>
 	</head>
 	<body class="is-preload">
@@ -55,7 +52,7 @@
 				<!-- One -->
 					<section id="one" class="wrapper style2 spotlights">
 						<section>
-							<a href="#" class="image"><img src="{% static 'images/DoHoon.jpg' %}" alt="DoHoon" data-position="center center" /></a>
+							<a href="#" class="image"><img src="{% static 'images/DoHoon.png' %}" alt="DoHoon" data-position="center center" /></a>
 							<div class="content">
 								<div class="inner">
 									<h2>Song Do Hoon</h2>
@@ -169,113 +166,18 @@
 										const videoElement = document.getElementsByClassName('input_video')[0];
 										const canvasElement = document.getElementsByClassName('output_canvas')[0];
 										const canvasCtx = canvasElement.getContext('2d');
-										 // tensorflow lite model loading / 모델 경로
-										const keypoint_model = await tf.loadLayersModel('{% static "model/keypoint/model.json" %}');
-										const gesture_model = await tf.loadLayersModel('{% static "model/gesture/model.json" %}');
-										//console.log(keypoint_model.name, gesture_model.name, ": model logged successfully");
-										//
-
-										// results parsing 하는 부분.
-										function json2tensor(results){
-											var point = tf.tensor([]);
-											console.log("multi", results.multiHandLandmarks[0]);
-											const flattenLayer = tf.layers.flatten();
-											for (const landmarks of results.multiHandLandmarks[0]) {
-												point = tf.concat([point,tf.tensor([landmarks.x,landmarks.y])]);
-											}
-											point = tf.reshape(point,[1,42]);
-											//console.log("json2", point);
-											//point = flattenLayer.apply(point);
-											return point;
-										}
-										function json3tensor(ll){
-											var point = tf.tensor([]);
-											const flattenLayer = tf.layers.flatten();
-											for (const landmarks of ll) {
-												point = tf.concat([point,tf.tensor([landmarks[0],landmarks[1]])]);
-											}
-											point = tf.reshape(point,[1,42]);
-											//console.log("json3", point);
-											return point;
-										}
-										function calc_landmark_list(landmarks){
-											const image_width = 500;
-											const image_height = 400;
-
-											var landmark_point = [];
-											//console.log(landmarks[0]);
-											if (landmarks.length <= 0){
-												return landmark_point;
-											}
-											landmarks[0].forEach(function(landmark){
-												var x = Math.min(parseInt(landmark.x * image_width), image_width - 1);
-												var y = Math.min(parseInt(landmark.y * image_height), image_height - 1);
-											
-												landmark_point.push([x, y]);
-											});
-											//console.log("calc success", landmark_point.length);
-											return landmark_point;
-										}
-										function pre_process_landmark(landmark_list){
-											var tmp = landmark_list.slice();
-											if(!tmp.length){
-												return tmp;
-											}
-											var base_x = 0;
-											var base_y = 0;
-											var idx = 0;
-											for(var landmark_point of tmp){
-												if (idx == 0) {
-													base_x = landmark_point[0];
-													base_y = landmark_point[1];
-												}
-
-												tmp[idx][0] = landmark_point[0] - base_x;
-												tmp[idx][1] = landmark_point[1] - base_y;
-												idx++;
-											}
-											//console.log("tmp set", tmp.length, tmp);
-											var ftmp = tmp.flat();
-											for(var i=0;i<ftmp.length;i++){
-												ftmp[i] = Math.abs(ftmp[i]);
-											}
-											var max_value = Math.max(...ftmp);
-											//console.log()
-											tmp.forEach(function(n){
-												return n / max_value;
-											});
-											//console.log("pre_process success", tmp.length, tmp, max_value);
-											return tmp;
-										}
+										 
 										function onResults(results) {
 										  canvasCtx.save();
 										  canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
 										  canvasCtx.drawImage(
 											  results.image, 0, 0, canvasElement.width, canvasElement.height);
 										  if (results.multiHandLandmarks) {
-											var landmark_ = calc_landmark_list(results.multiHandLandmarks);
-											var pre_processed_landmark_list = pre_process_landmark(landmark_);
 											for (const landmarks of results.multiHandLandmarks) {
 											  drawConnectors(canvasCtx, landmarks, HAND_CONNECTIONS,
 															 {color: '#00FF00', lineWidth: 5});
 											  drawLandmarks(canvasCtx, landmarks, {color: '#FF0000', lineWidth: 2});
 											}
-											if (results.multiHandLandmarks[0]){
-												//const predictionArray = model.predict(json2tensor(results)).dataSync();
-												//json2tensor(results);
-												//json3tensor(pre_processed_landmark_list);
-												const predictionArray = keypoint_model.predict(json3tensor(pre_processed_landmark_list)).dataSync();
-												var max_Value = predictionArray.indexOf(Math.max(...predictionArray));
-												var labels = [
-													"open",
-													"close",
-													"okay",
-													"pointer1",
-													"pointer2",
-													"smile"
-												]
-												console.log(labels[max_Value]);
-											};
 										  }
 										  canvasCtx.restore();
 										}
