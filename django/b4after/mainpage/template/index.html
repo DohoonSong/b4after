@@ -166,6 +166,43 @@
     									<canvas class="output_canvas" width="500px" height="400px"></canvas>
 									</div>
 									<script type="module">
+										class Deque {
+											constructor() {
+												this.arr = [];
+												this.head = 0;
+												this.tail = 0;
+											}
+											push_front(item) {
+												if (this.arr[0]) {
+												for (let i = this.arr.length; i > 0; i--) {
+													this.arr[i] = this.arr[i - 1];
+												}
+												}
+												this.arr[this.head] = item;
+												this.tail++;
+											}
+											push_back(item) {
+												this.arr[this.tail++] = item;
+											}
+											pop_front() {
+												if (this.head >= this.tail) {
+												return null;
+												} else {
+												const result = this.arr[this.head++];
+												return result;
+												}
+											}
+											pop_back() {
+												if (this.head >= this.tail) {
+												return null;
+												} else {
+												const result = this.arr[--this.tail];
+												return result;
+												}
+											}
+											}
+
+										let deque = new Deque();
 										const videoElement = document.getElementsByClassName('input_video')[0];
 										const canvasElement = document.getElementsByClassName('output_canvas')[0];
 										const canvasCtx = canvasElement.getContext('2d');
@@ -173,6 +210,7 @@
 										const keypoint_model = await tf.loadLayersModel('{% static "model/keypoint/model.json" %}');
 										const gesture_model = await tf.loadLayersModel('{% static "model/gesture/model.json" %}');
 										console.log(keypoint_model.name, gesture_model.name, ": model logged successfully");
+										let point_history = [];
 										//
 
 										// results parsing 하는 부분.
@@ -194,13 +232,13 @@
 											for (const landmarks of ll) {
 												point = tf.concat([point,tf.tensor([landmarks[0],landmarks[1]])]);
 											}
-											point = tf.reshape(point,[1,42]);
-											//console.log("json3", point);
+											point = tf.reshape(point,[1,ll.length * 2]);
+											// console.log("json3", point);
 											return point;
 										}
 										function calc_landmark_list(landmarks){
-											const image_width = 500;
-											const image_height = 400;
+											const image_width = 1280;
+											const image_height = 720;
 
 											var landmark_point = [];
 											//console.log(landmarks[0]);
@@ -247,6 +285,28 @@
 											//console.log("pre_process success", tmp.length, tmp, max_value);
 											return tmp;
 										}
+
+										function pre_process_point_history(point_history_list) {
+											const image_width = 1280;
+											const image_height = 720;
+											var tmp = point_history_list.slice();
+											if(!tmp.length){
+												return tmp;
+											}
+											var base_x = 0;
+											var base_y = 0;
+											var idx = 0;
+											for(var point of tmp){
+												if (idx == 0) {
+													base_x = point[0];
+													base_y = point[1];
+												}
+												tmp[idx][0] = (point[0] - base_x) / image_width;
+												tmp[idx][1] = (point[1] - base_y) / image_height;
+											}
+
+											return tmp;
+										}
 										function onResults(results) {
 										  canvasCtx.save();
 										  canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
@@ -255,6 +315,7 @@
 										  if (results.multiHandLandmarks) {
 											var landmark_ = calc_landmark_list(results.multiHandLandmarks);
 											var pre_processed_landmark_list = pre_process_landmark(landmark_);
+											var pre_processed_point_history_list = pre_process_point_history(point_history);
 											for (const landmarks of results.multiHandLandmarks) {
 											  drawConnectors(canvasCtx, landmarks, HAND_CONNECTIONS,
 															 {color: '#00FF00', lineWidth: 5});
@@ -274,7 +335,25 @@
 													"pointer2",
 													"smile"
 												]
-												console.log(labels[max_Value]);
+												
+												point_history.push(landmark_[4])
+												point_history.push(landmark_[8])
+												
+												let point_history_len = pre_processed_point_history_list.length;
+												let history_length = 16
+												console.log(labels[max_Value], point_history_len);
+
+
+												if (point_history_len > (history_length * 2)) {
+													let cnt = point_history_len - (history_length * 2);
+													point_history = point_history.slice(cnt + 2);
+												}
+												if (point_history_len == (history_length * 2)){
+													const predictionArray2 = gesture_model.predict(json3tensor(pre_processed_point_history_list));
+													var max_gesture = predictionArray2.indexOf(Math.max(...predictionArray2));
+													console.log(max_gesture);
+												}
+
 											};
 										  }
 										  canvasCtx.restore();
