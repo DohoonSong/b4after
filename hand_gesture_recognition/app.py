@@ -146,7 +146,7 @@ def main():
 
                 # 핸드 사인 분류
                 hand_sign_id = keypoint_classifier(pre_processed_landmark_list)
-
+                print(landmark_list[8])
                 # save history (index_tip, thumb_tip)
                 point_history.append(landmark_list[8])
                 point_history.append(landmark_list[4])
@@ -213,10 +213,11 @@ def calc_bounding_rect(image, landmarks):
 
         landmark_array = np.append(landmark_array, landmark_point, axis=0)
 
-    wide = 10
+    wide_x = 25
+    wide_y = 10
     x, y, w, h = cv.boundingRect(landmark_array)
 
-    return [x - wide, y - wide, x + w + wide, y + h + wide]
+    return [x - wide_x, y - wide_y, x + w + wide_x, y + h + wide_y]
 
 
 def calc_landmark_list(image, landmarks):
