@@ -29,9 +29,9 @@
 					<nav>
 						<ul>
 							<li><a href="#intro">ABOUT PROJECT</a></li>
-							<li><a href="#one">Who we are</a></li>
+							<li><a href="#one">Who We Are</a></li>
 							<li><a href="#two">Project Page</a></li>
-							<li><a href="#three">Things To Do</a></li>
+							<li><a href="#three">Things We Done</a></li>
 						</ul>
 					</nav>
 				</div>
@@ -46,9 +46,6 @@
 							<h1>About B4 Team Project</h1>
 							<p>Hello, welcome to our project. This project leads you to experience Fantastic hand motion tracking which can control KaKao map without any device. </p>
 							<p><a href="https://map.kakao.com/">About Kakao map</a>.</p>
-							<ul class="actions">
-								<li><a href="#one" class="button scrolly">Learn more</a></li>
-							</ul>
 						</div>
 					</section>
 
@@ -57,24 +54,24 @@
 						<section>
 							<a href="#" class="image"><img src="{% static 'images/DoHoon.jpg' %}" alt="DoHoon" data-position="center center" /></a>
 							<div class="content">
-								<div class="inner">
-									<h2>Song Do Hoon</h2>
-									<p>Team Leader of B4 & AFTER.</p>
-									<ul class="actions">
-										<li><a href="generic.html" class="button">Learn more</a></li>
-									</ul>
+								<div class="content">
+									<div class="inner">
+										<h2>Song Do Hoon</h2>
+										<p>Team Project Leader of B4 & AFTER.</p>
+										<p>Issue management</p>
+									</div>
 								</div>
 							</div>
 						</section>
 						<section>
 							<a href="#" class="image"><img src="{% static 'images/JunYup.jpg' %}" alt="JunYup" data-position="top center" /></a>
 							<div class="content">
-								<div class="inner">
-									<h2>Lee Jun Yup</h2>
-									<p>ML Engineer</p>
-									<ul class="actions">
-										<li><a href="generic.html" class="button">Learn more</a></li>
-									</ul>
+								<div class="content">
+									<div class="inner">
+										<h2>Lee Jun Yup</h2>
+										<p>Data Preprocessing & Data Modeling</p>
+										<p>Model Evaluation and Modeling Process </p>
+									</div>
 								</div>
 							</div>
 						</section>
@@ -84,9 +81,8 @@
 								<div class="inner">
 									<h2>Park Sang In</h2>
 									<p>ML Engineer</p>
-									<ul class="actions">
-										<li><a href="generic.html" class="button">Learn more</a></li>
-									</ul>
+                                    <p>Data Preprocessing & Model deploying</p>
+									<p>ps...This project is working fine on my machine.. so, close the issue..</p>
 								</div>
 							</div>
 						</section>
@@ -95,10 +91,8 @@
 							<div class="content">
 								<div class="inner">
 									<h2>Kim Ah Lynne</h2>
-									<p>ML Engineer</p>
-									<ul class="actions">
-										<li><a href="generic.html" class="button">Learn more</a></li>
-									</ul>
+									<p>Data Cleansing & Removing Noisy Data</p>
+                                    <p>Model evaluation & customization</p>
 								</div>
 							</div>
 						</section>
@@ -111,98 +105,80 @@
 							<p>Now, you can control our map API with your hand Gesture.</p>
 							<div class="features">
 								<section>
-									<span class="icon solid major fa-code"></span>
 									<h3>KaKao Map API</h3>
-										<div id="map" style="width:500px;height:400px;"></div>
+										<div id="map" style="width:600px;height:500px;"></div>
 										<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=930d7dff7ef0e0911572002a7d811db9"></script>
 										<script>
+											function sleep(ms) {
+												const wakeUpTime = Date.now() + ms;
+												while (Date.now() < wakeUpTime) {}
+											}
+											//라벨 증가에 따른 i 값 증가를 위해 맨 처음에 선언
+											var i = 0;
+
 											var container = document.getElementById('map');
 											var options = {
-												center: new kakao.maps.LatLng(33.450701, 126.570667),
-												level: 5
+											center: new kakao.maps.LatLng(33.450701, 126.570667),
+											level: 5
 											};
-									
+
 											var map = new kakao.maps.Map(container, options);
 											function zoomIn(map) {
-												var curLevel = map.getLevel();
-												map.setLevel(curLevel + 1, {
-													animate: {
-														duration: 300
-													}
-												});
+											var curLevel = map.getLevel(); //확대 레벨
+											map.setLevel(curLevel + 1, { //확대
+												animate: {
+												duration: 300
+												}
+											});
 											}
 											function zoomOut(map) {
-												var curLevel = map.getLevel();
-												map.setLevel(curLevel - 1, {
-													animate: {
-														duration: 300
-													}
-												});
+											var curLevel = map.getLevel();
+											map.setLevel(curLevel - 1, { //축소
+												animate: {
+												duration: 300
+												}
+											});
 											}
-											function moveMap(map, direction) {
-												var curLoc = map.getCenter();
-												var moveLatLon = new kakao.maps.LatLng(curLoc.x + direction.x, curLoc.y + direction.y);
-												map.setCenter(moveLatLon);
-												
+
+											//Move 이동
+											function moveMap(map, pointer) {
+											var curLoc = map.getCenter(); //중심 위치 (위도, 경도)
+											// 지도 div width, height : offsetx, offsety (상대좌표 X)
+											const map_offset = document.getElementById('map');
+
+											// 포인터 상대..비율
+											// A_x = (pointer.x - 0.1) / 0.8;
+											// A_y = (pointer.y - 0.1) / 0.8;
+											// Cur_x = map_offset.offsetx * A_x;
+											// Cur_y = map_offset.offsety * A_y;
+											A_x = (pointer.x) /10; // / 2.56
+											A_y = (pointer.y) /10; // / 1.8
+											
+											// 1280 -> 500
+											// 720 -> 400									
+											map.panBy(-A_x, A_y);
 											}
+
+											//클릭
 											kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
 												var latLng = mouseEvent.latLng;
-
 												marker.setPosition(latLng);
-
 												var message = '클릭한 위치의 위도는 ' + latlng.getLat() + ' 이고, ';
 												message += '경도는 ' + latlng.getLng() + ' 입니다';
-												
-												var resultDiv = document.getElementById('clickLatlng'); 
+												var resultDiv = document.getElementById('clickLatlng');
 												resultDiv.innerHTML = message;
 											});
+
 										</script>
 								</section>
 								<section>
-									<span class="icon solid major fa-code"></span>
 									<h3>Your WEBCAM</h3>
 									<div class="container">
 										<video class="input_video"></video>
-    									<canvas class="output_canvas" width="500px" height="400px"></canvas>
+    									<canvas class="output_canvas" width="640" height="480" style=" transform: rotateY(180deg);"></canvas>
+										<p id="result_label"></p>
 									</div>
 									<script type="module">
-										class Deque {
-											constructor() {
-												this.arr = [];
-												this.head = 0;
-												this.tail = 0;
-											}
-											push_front(item) {
-												if (this.arr[0]) {
-												for (let i = this.arr.length; i > 0; i--) {
-													this.arr[i] = this.arr[i - 1];
-												}
-												}
-												this.arr[this.head] = item;
-												this.tail++;
-											}
-											push_back(item) {
-												this.arr[this.tail++] = item;
-											}
-											pop_front() {
-												if (this.head >= this.tail) {
-												return null;
-												} else {
-												const result = this.arr[this.head++];
-												return result;
-												}
-											}
-											pop_back() {
-												if (this.head >= this.tail) {
-												return null;
-												} else {
-												const result = this.arr[--this.tail];
-												return result;
-												}
-											}
-											}
-
-										let deque = new Deque();
 										const videoElement = document.getElementsByClassName('input_video')[0];
 										const canvasElement = document.getElementsByClassName('output_canvas')[0];
 										const canvasCtx = canvasElement.getContext('2d');
@@ -237,8 +213,8 @@
 											return point;
 										}
 										function calc_landmark_list(landmarks){
-											const image_width = 1280;
-											const image_height = 720;
+											const image_width = 640;
+											const image_height = 480;
 
 											var landmark_point = [];
 											//console.log(landmarks[0]);
@@ -268,9 +244,10 @@
 													base_y = landmark_point[1];
 												}
 
-												tmp[idx][0] = landmark_point[0] - base_x;
-												tmp[idx][1] = landmark_point[1] - base_y;
-												idx++;
+												tmp[idx][0] = (landmark_point[0] - base_x) / 1.5; // (960 / 640)
+												tmp[idx][1] = (landmark_point[1] - base_y) / 1.125; // (540 / 480)
+												// console.log(tmp[idx])
+												idx++
 											}
 											//console.log("tmp set", tmp.length, tmp);
 											var ftmp = tmp.flat();
@@ -287,8 +264,8 @@
 										}
 
 										function pre_process_point_history(point_history_list) {
-											const image_width = 1280;
-											const image_height = 720;
+											const image_width = 640;
+											const image_height = 480;
 											var tmp = point_history_list.slice();
 											if(!tmp.length){
 												return tmp;
@@ -301,12 +278,26 @@
 													base_x = point[0];
 													base_y = point[1];
 												}
-												tmp[idx][0] = (point[0] - base_x) / image_width;
-												tmp[idx][1] = (point[1] - base_y) / image_height;
+												tmp[idx][0] = ((point[0] - base_x) / image_width) / 1.5; // (960 / 640)
+												tmp[idx][1] = ((point[1] - base_y) / image_height) / 1.125; // (540 / 480)
 											}
 
 											return tmp;
 										}
+										var key_labels = [
+											"open",
+											"close",
+											"okay",
+											"pointer1",
+											"pointer2",
+											"smile",
+										];
+										var point_labels = [
+											"None",
+											"Zoom Out",
+											"Zoom In",
+											"Move",
+										];
 										function onResults(results) {
 										  canvasCtx.save();
 										  canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
@@ -327,31 +318,60 @@
 												//json3tensor(pre_processed_landmark_list);
 												const predictionArray = keypoint_model.predict(json3tensor(pre_processed_landmark_list)).dataSync();
 												var max_Value = predictionArray.indexOf(Math.max(...predictionArray));
-												var labels = [
-													"open",
-													"close",
-													"okay",
-													"pointer1",
-													"pointer2",
-													"smile"
-												]
-												
-												point_history.push(landmark_[4])
+
 												point_history.push(landmark_[8])
+												point_history.push(landmark_[4])
 												
+												
+												console.log(key_labels[max_Value])
+
+
 												let point_history_len = pre_processed_point_history_list.length;
 												let history_length = 16
-												console.log(labels[max_Value], point_history_len);
+												
 
-
-												if (point_history_len > (history_length * 2)) {
-													let cnt = point_history_len - (history_length * 2);
-													point_history = point_history.slice(cnt + 2);
+												if (point_history.length > (history_length * 2)) {
+													let cnt = point_history.length - (history_length * 2);
+													point_history = point_history.slice(cnt);
 												}
+												//console.log(key_labels[max_Value], point_history_len, point_history.length);
 												if (point_history_len == (history_length * 2)){
-													const predictionArray2 = gesture_model.predict(json3tensor(pre_processed_point_history_list));
+													const predictionArray2 = gesture_model.predict(json3tensor(pre_processed_point_history_list)).dataSync();
 													var max_gesture = predictionArray2.indexOf(Math.max(...predictionArray2));
-													console.log(max_gesture);
+													var point_label = point_labels[max_gesture];
+													switch (point_label) {
+													case "Zoom In":
+														//zoomIn(map);
+														console.log("Zoom In");
+														break;
+													case "Zoom Out":
+														//zoomOut(map);
+														console.log("Zoom Out");
+														break;
+													case "Move":
+														var pointer = {
+															x : landmark_[8][0],
+															y : landmark_[8][1],															
+														}
+														// console.log(pointer)
+														// if (key_labels[max_Value] !== "open" && key_labels[max_Value] !== "close"){
+														// 	moveMap(map, pointer);
+														// 	console.log("move");
+														// } else{
+														// 	console.log("None");
+														// };		
+														moveMap(map, pointer);
+														console.log("move");											
+														break;														
+													case "None":
+														console.log("None");
+														break;
+													default:
+														console.log("another", point_label);
+														break;
+													}
+														
+													//console.log(max_gesture);
 												}
 
 											};
@@ -363,7 +383,7 @@
 										  return `https://cdn.jsdelivr.net/npm/@mediapipe/hands/${file}`;
 										}});
 										hands.setOptions({
-										  maxNumHands: 2,
+										  maxNumHands: 1,
 										  minDetectionConfidence: 0.8,
 										  minTrackingConfidence: 0.5
 										});
@@ -371,79 +391,60 @@
 										 
 										const camera = new Camera(videoElement, {
 										  onFrame: async () => {
+											videoElement.msHorizontalMirror = true;
 											await hands.send({image: videoElement});
 										  },
-										  width: 500,
-										  height: 400
+										  width: 640,
+										  height: 480,
 										});
 										camera.start();
 										</script>
 								</section>
 							</div>
-							<ul class="actions">
-								<li><a href="generic.html" class="button">Learn more</a></li>
-							</ul>
 						</div>
 					</section>
 
 				<!-- Three -->
-					<section id="three" class="wrapper style1 fade-up">
-						<div class="inner">
-							<h2>Get in touch</h2>
-							<p>Phasellus convallis elit id ullamcorper pulvinar. Duis aliquam turpis mauris, eu ultricies erat malesuada quis. Aliquam dapibus, lacus eget hendrerit bibendum, urna est aliquam sem, sit amet imperdiet est velit quis lorem.</p>
-							<div class="split style1">
-								<section>
-									<form method="post" action="#">
-										<div class="fields">
-											<div class="field half">
-												<label for="name">Name</label>
-												<input type="text" name="name" id="name" />
-											</div>
-											<div class="field half">
-												<label for="email">Email</label>
-												<input type="text" name="email" id="email" />
-											</div>
-											<div class="field">
-												<label for="message">Message</label>
-												<textarea name="message" id="message" rows="5"></textarea>
-											</div>
-										</div>
-										<ul class="actions">
-											<li><a href="" class="button submit">Send Message</a></li>
-										</ul>
-									</form>
-								</section>
-								<section>
-									<ul class="contact">
-										<li>
-											<h3>Address</h3>
-											<span>12345 Somewhere Road #654<br />
-											Nashville, TN 00000-0000<br />
-											USA</span>
-										</li>
-										<li>
-											<h3>Email</h3>
-											<a href="#">user@untitled.tld</a>
-										</li>
-										<li>
-											<h3>Phone</h3>
-											<span>(000) 000-0000</span>
-										</li>
-										<li>
-											<h3>Social</h3>
-											<ul class="icons">
-												<li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
-												<li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
-												<li><a href="#" class="icon brands fa-github"><span class="label">GitHub</span></a></li>
-												<li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
-												<li><a href="#" class="icon brands fa-linkedin-in"><span class="label">LinkedIn</span></a></li>
-											</ul>
-										</li>
-									</ul>
-								</section>
-							</div>
+				<section id="three" class="wrapper fullscreen style1 fade-up">
+					<div class="inner">
+						<h2>Things we do</h2>
+						<p>Explain about out project and motion controlling.</p>
+						<div class="features">
+							<section style="width:30%;text-align: center">
+								<img src="{% static 'images/hand_tracking_android_gpu_small.gif' %}" style="object-fit: fill"/>
+							</section>
+							<section style="width:70%;">
+								<h3>How to get skeleton data from Webcam?</h3>
+								<p style="margin-left: 15px;text-indent:-15px">- Mediapipe is the customizable opensource for ML solutions. so we use Mediapipe Hands model to get Hands pose data</p>
+								<p style="margin-left: 15px;text-indent:-15px">- when we get hands pose dataset, there is nothing but hands pose dataset so we add another <b>ML model</b> to implement our project </p>
+								<br>
+								<p><a href="https://google.github.io/mediapipe/solutions/hands" >Details about Mediapose </a></p>
+							</section>
+							<section style="width:30%;display:table-cell">
+								<img src="{% static 'images/final.jpg' %}" style="width: 100%"/>
+							</section>
+							<section style="width:70%;">
+								<h3> MODEL BUILD </h3>
+								<p style="margin-left: 15px;text-indent:-15px">- We make our static model for action trigger, and motion recognition model for dynamic motion recognition. </p>
+								<p style="margin-left: 15px;text-indent:-15px">- Using LSTM sturucure for recognizing our point history model and light weight DL model to recognize static action recognition </p>
+								<p style="margin-left: 15px;text-indent:-15px">- For Simplicity we collect our own data with more than 10,000 samples... </p>
+								<br>
+							</section>
+							<section style="width:30%;display:table-cell;vertical-align: center">
+								<img src="{% static 'images/project(2).jpg' %}" style="width: 100%;vertical-align: center"/>
+							</section>
+							<section style="width:70%;">
+								<h3>SERVER & MODEL DEPLOYMENT</h3>
+								<p style="margin-left: 15px;text-indent:-15px">- For well-suited user experience, we deploy our model into Tf.JS.   </p>
+								<p style="margin-left: 15px;text-indent:-15px">- In order to run ML model on the client's device, model should be lite and less latency time.</p>
+								<p style="margin-left: 15px;text-indent:-15px">- so we convert our model to <b>Tf.lite model</b> and deploy on the web service so user don't have to download or prepare anything else,,,</p>
+								<p style="margin-left: 15px;text-indent:-15px">- Hope you enjoy our monthly project and send any issue about our project.   </p>
+							</section>
 						</div>
-					</section>
+
+					</div>
+				</section>
+
 
 			</div>
 
